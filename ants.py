@@ -23,7 +23,7 @@ class Place:
         self.exit = exit
         self.bees = []        # A list of Bees
         self.ant = None       # An Ant
-        self.entrance = None  # A Place
+        self.entrance = None  # A Place 
         # Phase 1: Add an entrance to the exit
         # BEGIN Problem 2
         self.exit = exit
