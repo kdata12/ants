@@ -253,7 +253,7 @@ class FireAnt(Ant):
     food_cost = 5
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 5
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
     # END Problem 5
 
     def __init__(self, health=3):
@@ -268,15 +268,44 @@ class FireAnt(Ant):
         the additional damage if the fire ant dies.
         """
         # BEGIN Problem 5
-        "*** YOUR CODE HERE ***"
+        current_place = self.place
+
+        super().reduce_health(amount)
+        damage = amount + (self.damage if self.health == 0 else 0)
+        for bee in list(current_place.bees):
+            bee.reduce_health(damage)
         # END Problem 5
 
 # BEGIN Problem 6
 # The WallAnt class
+class WallAnt(Ant):
+    name = 'Wall'
+    implemented = True
+    food_cost = 4
+    def __init__(self,health=4):
+        super().__init__(health)
 # END Problem 6
 
 # BEGIN Problem 7
 # The HungryAnt Class
+class HungryAnt(Ant):
+    name = 'Hungry'
+    implemented = True
+    food_cost = 4
+    chew_duration = 3
+    def __init__(self, health=1):
+        super().__init__(health)
+        self.chew_countdown = 0
+    
+    def action(self, gamestate):
+        if self.chew_countdown != 0:
+            self.chew_countdown -= 1
+            return
+        if len(self.place.bees) == 0:
+            return
+        unfortunate_bee = random_bee(self.place.bees)
+        unfortunate_bee.reduce_health(unfortunate_bee.health)
+        self.chew_countdown = HungryAnt.chew_duration
 # END Problem 7
 
 
@@ -297,7 +326,7 @@ class ContainerAnt(Ant):
 
     def store_ant(self, ant):
         # BEGIN Problem 8
-        "*** YOUR CODE HERE ***"
+        self.ant_contained = ant
         # END Problem 8
 
     def remove_ant(self, ant):
@@ -317,7 +346,9 @@ class ContainerAnt(Ant):
 
     def action(self, gamestate):
         # BEGIN Problem 8
-        "*** YOUR CODE HERE ***"
+        if self.ant_contained != None:
+            return
+        
         # END Problem 8
 
 
