@@ -134,7 +134,13 @@ class Ant(Insect):
             place.ant = self
         else:
             # BEGIN Problem 8
-            assert place.ant is None, 'Two ants in {0}'.format(place)
+            if place.ant.is_container and place.ant.can_contain(self):
+                place.ant.store_ant(self)
+            elif self.is_container and self.can_contain(place.ant):
+                self.store_ant(place.ant)
+                place.ant = self
+            else:
+                assert False, 'Two ants in {0}'.format(place)
             # END Problem 8
         Insect.add_to(self, place)
 
@@ -308,7 +314,6 @@ class HungryAnt(Ant):
         self.chew_countdown = HungryAnt.chew_duration
 # END Problem 7
 
-
 class ContainerAnt(Ant):
     """
     ContainerAnt can share a space with other ants by containing them.
@@ -321,7 +326,8 @@ class ContainerAnt(Ant):
 
     def can_contain(self, other):
         # BEGIN Problem 8
-        "*** YOUR CODE HERE ***"
+        if self.ant_contained == None and (other.is_container == False):
+            return True
         # END Problem 8
 
     def store_ant(self, ant):
@@ -347,8 +353,7 @@ class ContainerAnt(Ant):
     def action(self, gamestate):
         # BEGIN Problem 8
         if self.ant_contained != None:
-            return
-        
+            self.ant_contained.action(gamestate)
         # END Problem 8
 
 
@@ -359,11 +364,16 @@ class BodyguardAnt(ContainerAnt):
     food_cost = 4
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 8
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
+
+    def __init__(self, health=2):
+        super().__init__(health)
     # END Problem 8
 
 # BEGIN Problem 9
 # The TankAnt class
+class TankAnt(ContainerAnt):
+    
 # END Problem 9
 
 
