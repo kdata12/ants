@@ -54,6 +54,7 @@ class Insect:
 
     damage = 0
     # ADD CLASS ATTRIBUTES HERE
+    is_waterproof = False
 
     def __init__(self, health, place=None):
         """Create an Insect with a health amount and a starting PLACE."""
@@ -175,7 +176,7 @@ class HarvesterAnt(Ant):
         """
         # BEGIN Problem 1
         gamestate.food += 1
-        # END Problem 1
+        # END Problem
 
 
 class ThrowerAnt(Ant):
@@ -395,17 +396,26 @@ class Water(Place):
         """Add an Insect to this place. If the insect is not waterproof, reduce
         its health to 0."""
         # BEGIN Problem 10
-        "*** YOUR CODE HERE ***"
+        Place.add_insect(self, insect)
+
+        if insect.is_waterproof is False:
+            insect.reduce_health(insect.health)
         # END Problem 10
 
 # BEGIN Problem 11
 # The ScubaThrower class
+class ScubaThrower(ThrowerAnt):
+    name = 'Scuba'
+    implemented = True
+    is_waterproof = True
+    food_cost = 6
+    
+    def __init__(self, health=1):
+        super().__init__(health)
 # END Problem 11
 
 # BEGIN Problem 12
-
-
-class QueenAnt(Ant):  # You should change this line
+class QueenAnt(ScubaThrower):  # You should change this line
 # END Problem 12
     """The Queen of the colony. The game is over if a bee enters her place."""
 
@@ -414,7 +424,10 @@ class QueenAnt(Ant):  # You should change this line
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 12
     implemented = False   # Change to True to view in the GUI
+    is_waterproof = True
     # END Problem 12
+    def __init__(self, health=1):
+        super().__init__(health)
 
     @classmethod
     def construct(cls, gamestate):
@@ -459,6 +472,7 @@ class Bee(Insect):
     name = 'Bee'
     damage = 1
     # OVERRIDE CLASS ATTRIBUTES HERE
+    is_waterproof = True
 
     def sting(self, ant):
         """Attack an ANT, reducing its health by 1."""
