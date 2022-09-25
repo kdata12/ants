@@ -112,6 +112,7 @@ class Ant(Insect):
     def __init__(self, health=1):
         """Create an Insect with a HEALTH quantity."""
         super().__init__(health)
+        self.buffed = False
 
     @classmethod
     def construct(cls, gamestate):
@@ -157,7 +158,11 @@ class Ant(Insect):
     def buff(self):
         """Double this ants's damage, if it has not already been buffed."""
         # BEGIN Problem 12
-        "*** YOUR CODE HERE ***"
+        if self.buffed == False:
+            self.damage = self.damage * 2
+            self.buffed = True
+        if self.is_container and self.ant_contained != None:
+            self.ant_contained.buff()
         # END Problem 12
 
 
@@ -423,12 +428,9 @@ class QueenAnt(ScubaThrower):  # You should change this line
     food_cost = 7
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 12
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
     is_waterproof = True
     # END Problem 12
-    def __init__(self, health=1):
-        super().__init__(health)
-
     @classmethod
     def construct(cls, gamestate):
         """
@@ -436,7 +438,10 @@ class QueenAnt(ScubaThrower):  # You should change this line
         returns None otherwise. Remember to call the construct() method of the superclass!
         """
         # BEGIN Problem 12
-        "*** YOUR CODE HERE ***"
+        if not gamestate.has_queen:
+            gamestate.has_queen = True
+            return super().construct(gamestate)
+        return None
         # END Problem 12
 
     def action(self, gamestate):
@@ -444,7 +449,13 @@ class QueenAnt(ScubaThrower):  # You should change this line
         in her tunnel.
         """
         # BEGIN Problem 12
-        "*** YOUR CODE HERE ***"
+        super().action(gamestate)
+        current_place = self.place.exit
+        
+        while current_place != None:
+            if current_place.ant != None:
+                current_place.ant.buff()
+            current_place = current_place.exit
         # END Problem 12
 
     def reduce_health(self, amount):
@@ -452,8 +463,12 @@ class QueenAnt(ScubaThrower):  # You should change this line
         remaining, signal the end of the game.
         """
         # BEGIN Problem 12
-        "*** YOUR CODE HERE ***"
+        super().reduce_health(amount)
+        ants_lose()
         # END Problem 12
+
+    def remove_from(self, place):
+        pass
 
 
 class AntRemover(Ant):
@@ -721,6 +736,7 @@ class GameState:
         self.beehive = beehive
         self.ant_types = OrderedDict((a.name, a) for a in ant_types)
         self.dimensions = dimensions
+        self.has_queen = False
         self.active_bees = []
         self.configure(beehive, create_places)
 
