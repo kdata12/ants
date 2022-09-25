@@ -158,7 +158,7 @@ class Ant(Insect):
     def buff(self):
         """Double this ants's damage, if it has not already been buffed."""
         # BEGIN Problem 12
-        if self.buffed == False:
+        if self.buffed is False:
             self.damage = self.damage * 2
             self.buffed = True
         if self.is_container and self.ant_contained != None:
